@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block extra_head %}
+<style>
+.dash-wrap{display:flex;min-height:100vh;padding-top:4.5rem;}
+.dash-sidebar{width:240px;flex-shrink:0;border-right:1px solid var(--border);padding:2rem 1rem;position:sticky;top:4.5rem;height:calc(100vh - 4.5rem);overflow-y:auto;}
+.dash-sidebar-title{font-family:var(--font-mono);font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.12em;padding:0 .75rem;margin-bottom:.75rem;}
+.dash-nav{list-style:none;display:flex;flex-direction:column;gap:.15rem;margin-bottom:1.75rem;}
+.dash-nav a{display:flex;align-items:center;gap:.7rem;font-size:.85rem;color:var(--text-secondary);text-decoration:none;padding:.6rem .75rem;border-radius:var(--radius-sm);transition:background .15s,color .15s;}
+.dash-nav a i{width:18px;text-align:center;font-size:.95rem;}
+.dash-nav a:hover{background:rgba(255,255,255,.05);color:var(--text-primary);}
+.dash-nav a.active{background:rgba(124,58,237,.12);color:var(--accent-light);}
+.dash-main{flex:1;padding:2.5rem 3rem;max-width:1000px;}
+.dash-header{margin-bottom:2rem;}
+.dash-eyebrow{font-family:var(--font-mono);font-size:.7rem;color:var(--accent-light);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;}
+.dash-title{font-family:var(--font-display);font-size:1.7rem;font-weight:700;letter-spacing:-.02em;}
+.dash-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.75rem;margin-bottom:1.5rem;}
+.dash-alert{font-family:var(--font-mono);font-size:.78rem;border-radius:var(--radius-sm);padding:.7rem 1rem;margin-bottom:1.25rem;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);color:#4ade80;}
+.dash-alert.error{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);color:#f87171;}
+.dash-field{margin-bottom:1.25rem;}
+.dash-label{display:block;font-family:var(--font-mono);font-size:.72rem;color:var(--text-secondary);letter-spacing:.04em;margin-bottom:.5rem;}
+.dash-input,.dash-select,.dash-textarea{width:100%;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.7rem 1rem;color:var(--text-primary);font-family:var(--font-body);font-size:.88rem;transition:border-color .2s;}
+.dash-input:focus,.dash-select:focus,.dash-textarea:focus{outline:none;border-color:var(--border-accent);}
+.dash-textarea{resize:vertical;min-height:100px;}
+.dash-checkbox-row{display:flex;align-items:center;gap:.6rem;}
+.dash-checkbox-row input{width:16px;height:16px;accent-color:var(--accent);}
+.dash-row-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.dash-field-errors{font-family:var(--font-mono);font-size:.7rem;color:#f87171;margin-top:.35rem;}
+.dash-empty{text-align:center;padding:3rem 1.5rem;color:var(--text-muted);}
+.dash-empty i{font-size:2rem;margin-bottom:.75rem;display:block;opacity:.6;}
+.dash-list-item{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.25rem;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.75rem;background:var(--bg-secondary);}
+.dash-list-main{display:flex;align-items:center;gap:1rem;flex:1;min-width:0;}
+.dash-list-thumb{width:44px;height:44px;border-radius:var(--radius-sm);object-fit:cover;background:var(--bg-card);flex-shrink:0;}
+.dash-list-thumb-placeholder{width:44px;height:44px;border-radius:var(--radius-sm);background:var(--bg-card);display:flex;align-items:center;justify-content:center;color:var(--accent-light);flex-shrink:0;}
+.dash-list-title{font-size:.88rem;font-weight:600;color:var(--text-primary);}
+.dash-list-sub{font-size:.76rem;color:var(--text-muted);margin-top:.15rem;}
+.dash-list-actions{display:flex;gap:.5rem;flex-shrink:0;}
+.dash-icon-btn{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-secondary);text-decoration:none;cursor:pointer;transition:all .15s;font-size:.85rem;}
+.dash-icon-btn:hover{border-color:var(--border-accent);color:var(--accent-light);}
+.dash-icon-btn.danger:hover{border-color:rgba(239,68,68,.4);color:#f87171;}
+.dash-status-pill{font-family:var(--font-mono);font-size:.62rem;font-weight:600;padding:.2rem .6rem;border-radius:100px;text-transform:uppercase;letter-spacing:.04em;}
+.dash-status-pill.published{background:rgba(34,197,94,.12);color:#4ade80;}
+.dash-status-pill.draft{background:rgba(255,255,255,.06);color:var(--text-muted);}
+@media(max-width:900px){.dash-wrap{flex-direction:column;}.dash-sidebar{width:100%;position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);}.dash-main{padding:1.75rem 1.25rem;}.dash-row-2{grid-template-columns:1fr;}}
+</style>
+{% block dash_extra_head %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+  <aside class="dash-sidebar">
+    <div class="dash-sidebar-title">Manage</div>
+    <ul class="dash-nav">
+      <li><a href="{% url 'dashboard' %}" class="{% if active_nav == 'overview' %}active{% endif %}"><i class="bi bi-grid"></i> Overview</a></li>
+      <li><a href="{% url 'edit_personal' %}" class="{% if active_nav == 'personal' %}active{% endif %}"><i class="bi bi-person"></i> Personal info</a></li>
+      <li><a href="{% url 'manage_projects' %}" class="{% if active_nav == 'projects' %}active{% endif %}"><i class="bi bi-kanban"></i> Projects</a></li>
+      <li><a href="{% url 'manage_experience' %}" class="{% if active_nav == 'experience' %}active{% endif %}"><i class="bi bi-briefcase"></i> Experience</a></li>
+      <li><a href="{% url 'manage_education' %}" class="{% if active_nav == 'education' %}active{% endif %}"><i class="bi bi-mortarboard"></i> Education</a></li>
+      <li><a href="{% url 'manage_skills' %}" class="{% if active_nav == 'skills' %}active{% endif %}"><i class="bi bi-stars"></i> Skills</a></li>
+      <li><a href="{% url 'manage_social' %}" class="{% if active_nav == 'social' %}active{% endif %}"><i class="bi bi-link-45deg"></i> Social links</a></li>
+      <li><a href="{% url 'view_messages' %}" class="{% if active_nav == 'messages' %}active{% endif %}"><i class="bi bi-envelope"></i> Messages</a></li>
+    </ul>
+    <div class="dash-sidebar-title">Live page</div>
+    <ul class="dash-nav">
+      <li><a href="/{{ request.user.profile.username_slug }}/" target="_blank"><i class="bi bi-box-arrow-up-right"></i> View portfolio</a></li>
+    </ul>
+  </aside>
+
+  <main class="dash-main">
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="dash-alert {% if 'error' in msg.tags %}error{% endif %}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+    {% block dash_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

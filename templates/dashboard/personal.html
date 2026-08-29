@@ -1,0 +1,97 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Personal info{% endblock %}
+
+{% block dash_extra_head %}
+<style>
+.pi-avatar-row{display:flex;align-items:center;gap:1.25rem;margin-bottom:1.75rem;}
+.pi-avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:1px solid var(--border);background:var(--bg-secondary);}
+.pi-avatar-placeholder{width:72px;height:72px;border-radius:50%;background:var(--bg-secondary);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--text-muted);}
+.pi-file-label{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:.78rem;color:var(--text-secondary);background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem 1rem;cursor:pointer;transition:border-color .2s;}
+.pi-file-label:hover{border-color:var(--border-accent);}
+.pi-current-file{font-size:.78rem;color:var(--text-muted);margin-top:.4rem;}
+.pi-current-file a{color:var(--accent-light);text-decoration:none;}
+</style>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header">
+  <div class="dash-eyebrow">// manage</div>
+  <h1 class="dash-title">Personal info</h1>
+</div>
+
+<div class="dash-card">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="pi-avatar-row">
+      {% if info.profile_image %}
+        <img src="{{ info.profile_image.url }}" class="pi-avatar" alt="">
+      {% else %}
+        <div class="pi-avatar-placeholder"><i class="bi bi-person"></i></div>
+      {% endif %}
+      <div>
+        <label class="pi-file-label">
+          <i class="bi bi-upload"></i> Upload profile photo
+          <input type="file" name="profile_image" accept="image/*" style="display:none;" onchange="this.parentElement.nextElementSibling.textContent=this.files[0]?.name||''">
+        </label>
+        <div class="pi-current-file"></div>
+      </div>
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_full_name">Full name</label>
+        <input class="dash-input" type="text" id="id_full_name" name="full_name" value="{{ info.full_name }}" required>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_tagline">Tagline</label>
+        <input class="dash-input" type="text" id="id_tagline" name="tagline" value="{{ info.tagline }}" placeholder="Full-Stack Developer">
+      </div>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_bio">Bio</label>
+      <textarea class="dash-textarea dash-input" id="id_bio" name="bio" rows="5">{{ info.bio }}</textarea>
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_email">Email</label>
+        <input class="dash-input" type="email" id="id_email" name="email" value="{{ info.email }}" required>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_phone">Phone</label>
+        <input class="dash-input" type="text" id="id_phone" name="phone" value="{{ info.phone }}">
+      </div>
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_location">Location</label>
+        <input class="dash-input" type="text" id="id_location" name="location" value="{{ info.location }}">
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_years_experience">Years of experience</label>
+        <input class="dash-input" type="number" min="0" id="id_years_experience" name="years_experience" value="{{ info.years_experience }}">
+      </div>
+    </div>
+
+    <div class="dash-field dash-checkbox-row">
+      <input type="checkbox" id="id_open_to_work" name="open_to_work" {% if info.open_to_work %}checked{% endif %}>
+      <label class="dash-label" for="id_open_to_work" style="margin:0;">Open to work</label>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_resume_file">Resume (PDF)</label>
+      {% if info.resume_file %}
+        <div class="pi-current-file" style="margin-bottom:.5rem;">
+          Current: <a href="{{ info.resume_file.url }}" target="_blank">{{ info.resume_file.name|cut:"portfolio/resume/" }}</a>
+        </div>
+      {% endif %}
+      <input class="dash-input" type="file" id="id_resume_file" name="resume_file" accept="application/pdf">
+    </div>
+
+    <button type="submit" class="btn-primary-custom"><i class="bi bi-check-lg"></i> Save changes</button>
+  </form>
+</div>
+{% endblock %}

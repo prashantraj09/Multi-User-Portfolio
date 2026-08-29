@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}Portfolio — build your developer page{% endblock %}
+
+{% block extra_head %}
+<style>
+.land-hero{min-height:90vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:5rem;}
+.land-grid-deco{position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04) 1px,transparent 1px);background-size:60px 60px;z-index:0;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);}
+.land-content{position:relative;z-index:2;text-align:center;max-width:760px;margin:0 auto;}
+.land-eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:.75rem;color:var(--accent-light);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem;}
+.land-title{font-family:var(--font-display);font-size:clamp(2.4rem,6vw,4rem);font-weight:700;letter-spacing:-.04em;line-height:1.08;margin-bottom:1.25rem;}
+.land-sub{font-size:1.05rem;color:var(--text-secondary);line-height:1.7;max-width:560px;margin:0 auto 2.5rem;}
+.land-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;}
+.land-lookup{max-width:420px;margin:0 auto;}
+.land-lookup-row{display:flex;align-items:stretch;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+.land-lookup-prefix{display:flex;align-items:center;font-family:var(--font-mono);font-size:.82rem;color:var(--text-muted);padding:0 0 0 1.1rem;}
+.land-lookup-row input{flex:1;background:transparent;border:none;color:var(--text-primary);font-family:var(--font-mono);font-size:.82rem;padding:.85rem .5rem;}
+.land-lookup-row input:focus{outline:none;}
+.land-lookup-row button{background:var(--accent);border:none;color:#fff;padding:0 1.4rem;cursor:pointer;font-family:var(--font-mono);font-size:.78rem;transition:background .2s;}
+.land-lookup-row button:hover{background:var(--accent-light);}
+.land-lookup-hint{font-family:var(--font-mono);font-size:.68rem;color:var(--text-muted);margin-top:.75rem;}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="land-hero">
+  <div class="land-grid-deco"></div>
+  <div class="orb orb-purple" style="width:500px;height:500px;top:-150px;left:50%;transform:translateX(-50%);"></div>
+  <div class="container-custom land-content">
+    <span class="land-eyebrow"><i class="bi bi-terminal"></i> portfolio.in</span>
+    <h1 class="land-title" data-aos="fade-up">Your work, <span class="accent-text" style="background:linear-gradient(135deg,var(--accent) 0%,var(--accent-light) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">one clean URL.</span></h1>
+    <p class="land-sub" data-aos="fade-up" data-aos-delay="100">
+      Register, fill in your projects, experience, and skills once — and share a single link
+      that always stays up to date. No rebuilding, no redeploying.
+    </p>
+    <div class="land-actions" data-aos="fade-up" data-aos-delay="150">
+      <a href="{% url 'register' %}" class="btn-primary-custom"><i class="bi bi-rocket-takeoff"></i> Create your portfolio</a>
+      <a href="{% url 'login' %}" class="btn-outline-custom"><i class="bi bi-box-arrow-in-right"></i> Log in</a>
+    </div>
+
+    <div class="land-lookup" data-aos="fade-up" data-aos-delay="200">
+      <form id="lookupForm" class="land-lookup-row">
+        <span class="land-lookup-prefix">portfolio.in/</span>
+        <input type="text" id="lookupSlug" placeholder="username" autocomplete="off">
+        <button type="submit">Visit <i class="bi bi-arrow-right"></i></button>
+      </form>
+      <div class="land-lookup-hint">Know someone's portfolio link? Jump straight there.</div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('lookupForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var slug = document.getElementById('lookupSlug').value.trim().toLowerCase();
+  if (slug) window.location.href = '/' + slug + '/';
+});
+</script>
+{% endblock %}

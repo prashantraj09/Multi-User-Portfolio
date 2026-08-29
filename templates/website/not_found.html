@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}User Not Found{% endblock %}
+
+{% block nav_links %}{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; z-index: 1;">
+    <div class="orb orb-purple" style="width: 500px; height: 500px; top: -100px; left: 50%; transform: translateX(-50%); opacity: 0.3;"></div>
+
+    <div style="position: relative; z-index: 2;">
+        <div style="font-family: var(--font-mono); font-size: 6rem; font-weight: 700; color: var(--border-accent); line-height: 1; margin-bottom: 1rem;">
+            404
+        </div>
+
+        <h1 style="font-family: var(--font-display); font-size: 2rem; font-weight: 700; margin-bottom: 0.75rem;">
+            User <span style="color: var(--accent-light);">not found</span>
+        </h1>
+
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.5rem;">
+            No portfolio exists for <code style="color: var(--accent-light); background: rgba(124, 58, 237, 0.1); padding: 0.2rem 0.5rem; border-radius: 4px;">{{ username }}</code>
+        </p>
+
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2.5rem;">
+            The username may be misspelled or this user hasn't created an account yet.
+        </p>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'register' %}" class="btn-primary-custom">
+                <i class="bi bi-person-plus"></i> Create your portfolio
+            </a>
+            <a href="{% url 'login' %}" class="btn-outline-custom">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

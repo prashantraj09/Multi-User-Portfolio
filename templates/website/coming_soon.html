@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Coming soon{% endblock %}
+
+{% block extra_head %}
+<style>
+.cs-wrap{min-height:90vh;display:flex;align-items:center;justify-content:center;padding-top:5rem;text-align:center;}
+.cs-icon{font-size:2.5rem;color:var(--accent-light);margin-bottom:1.5rem;opacity:.8;}
+.cs-title{font-family:var(--font-display);font-size:2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.75rem;}
+.cs-sub{font-size:.95rem;color:var(--text-secondary);max-width:420px;margin:0 auto 2rem;line-height:1.6;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-custom cs-wrap">
+  <div data-aos="fade-up">
+    <div class="cs-icon"><i class="bi bi-hourglass-split"></i></div>
+    <h1 class="cs-title">This portfolio isn't live yet</h1>
+    <p class="cs-sub">
+      {% if profile %}@{{ profile.username_slug }}{% else %}This page{% endif %}
+      hasn't published their portfolio yet. Check back soon.
+    </p>
+    <a href="{% url 'landing' %}" class="btn-outline-custom"><i class="bi bi-arrow-left"></i> Back home</a>
+  </div>
+</div>
+{% endblock %}

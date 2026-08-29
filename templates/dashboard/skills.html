@@ -1,0 +1,119 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Skills{% endblock %}
+
+{% block dash_extra_head %}
+<style>
+.sk-two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.sk-cat-group{margin-bottom:1.5rem;}
+.sk-cat-name{font-family:var(--font-mono);font-size:.75rem;color:var(--accent-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between;}
+.sk-pills{display:flex;flex-wrap:wrap;gap:.5rem;}
+.sk-pill{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:100px;padding:.4rem .5rem .4rem .9rem;font-size:.8rem;color:var(--text-primary);}
+.sk-pill .lvl{font-family:var(--font-mono);font-size:.62rem;color:var(--text-muted);}
+.sk-pill button{background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;padding:.2rem;border-radius:50%;transition:color .15s;}
+.sk-pill button:hover{color:#f87171;}
+@media(max-width:800px){.sk-two-col{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header">
+  <div class="dash-eyebrow">// manage</div>
+  <h1 class="dash-title">Skills</h1>
+</div>
+
+<div class="sk-two-col">
+  <div class="dash-card">
+    <div class="dash-label" style="margin-bottom:1rem;">Add category</div>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="category">
+      <div class="dash-field">
+        <label class="dash-label" for="id_cat_name">Category name</label>
+        <input class="dash-input" type="text" id="id_cat_name" name="name" placeholder="Frontend, Backend, Tools…" required>
+      </div>
+      <button type="submit" class="btn-outline-custom"><i class="bi bi-plus-lg"></i> Add category</button>
+    </form>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-label" style="margin-bottom:1rem;">Add skill</div>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="skill">
+      <div class="dash-field">
+        <label class="dash-label" for="id_skill_name">Skill name</label>
+        <input class="dash-input" type="text" id="id_skill_name" name="name" placeholder="React" required>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_skill_category">Category</label>
+        <select class="dash-select dash-input" id="id_skill_category" name="category">
+          <option value="">— None —</option>
+          {% for cat in categories %}
+            <option value="{{ cat.pk }}">{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_proficiency">Proficiency</label>
+        <select class="dash-select dash-input" id="id_proficiency" name="proficiency">
+          {% for value, label in skill_form.fields.proficiency.choices %}
+            <option value="{{ value }}" {% if value == 3 %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_icon_class">Devicon class <span style="opacity:.6;">(optional)</span></label>
+        <input class="dash-input" type="text" id="id_icon_class" name="icon_class" placeholder="devicon-react-original">
+      </div>
+      <button type="submit" class="btn-outline-custom"><i class="bi bi-plus-lg"></i> Add skill</button>
+    </form>
+  </div>
+</div>
+
+<div class="dash-card">
+  <div class="dash-label" style="margin-bottom:1.25rem;">Your skills</div>
+  {% if categories or uncategorized %}
+    {% for cat in categories %}
+      <div class="sk-cat-group">
+        <div class="sk-cat-name">
+          {{ cat.name }}
+          <form method="POST" action="{% url 'delete_skill_category' cat.pk %}" onsubmit="return confirm('Delete this category? Skills inside will become uncategorized.');" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.78rem;"><i class="bi bi-trash"></i></button>
+          </form>
+        </div>
+        <div class="sk-pills">
+          {% for s in cat.skills.all %}
+          <span class="sk-pill">
+            {% if s.icon_class %}<i class="{{ s.icon_class }}"></i>{% endif %}
+            {{ s.name }} <span class="lvl">{{ s.get_proficiency_display }}</span>
+            <form method="POST" action="{% url 'delete_skill' s.pk %}" onsubmit="return confirm('Remove this skill?');" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit"><i class="bi bi-x"></i></button>
+            </form>
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+    {% if uncategorized %}
+      <div class="sk-cat-group">
+        <div class="sk-cat-name">Uncategorized</div>
+        <div class="sk-pills">
+          {% for s in uncategorized %}
+          <span class="sk-pill">
+            {{ s.name }} <span class="lvl">{{ s.get_proficiency_display }}</span>
+            <form method="POST" action="{% url 'delete_skill' s.pk %}" onsubmit="return confirm('Remove this skill?');" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit"><i class="bi bi-x"></i></button>
+            </form>
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="dash-empty"><i class="bi bi-stars"></i>No skills added yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

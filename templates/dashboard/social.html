@@ -1,0 +1,67 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Social links{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header">
+  <div class="dash-eyebrow">// manage</div>
+  <h1 class="dash-title">Social links</h1>
+</div>
+
+<div class="dash-card">
+  <div class="dash-label" style="margin-bottom:1rem;">Add a link</div>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_platform">Platform</label>
+        <select class="dash-select dash-input" id="id_platform" name="platform">
+          {% for value, label in form.fields.platform.choices %}
+            <option value="{{ value }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_url">URL</label>
+        <input class="dash-input" type="url" id="id_url" name="url" placeholder="https://github.com/yourname" required>
+      </div>
+    </div>
+    <div class="dash-field">
+      <label class="dash-label" for="id_label">Label <span style="opacity:.6;">(optional)</span></label>
+      <input class="dash-input" type="text" id="id_label" name="label" placeholder="@yourname">
+    </div>
+    <button type="submit" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Add link</button>
+  </form>
+</div>
+
+<div class="dash-card">
+  <div class="dash-label" style="margin-bottom:1rem;">Your links</div>
+  {% if links %}
+    {% for link in links %}
+    <div class="dash-list-item">
+      <div class="dash-list-main">
+        <div class="dash-list-thumb-placeholder">
+          {% if link.platform == 'github' %}<i class="bi bi-github"></i>
+          {% elif link.platform == 'linkedin' %}<i class="bi bi-linkedin"></i>
+          {% elif link.platform == 'twitter' %}<i class="bi bi-twitter-x"></i>
+          {% elif link.platform == 'instagram' %}<i class="bi bi-instagram"></i>
+          {% elif link.platform == 'website' %}<i class="bi bi-globe"></i>
+          {% else %}<i class="bi bi-link-45deg"></i>{% endif %}
+        </div>
+        <div style="min-width:0;">
+          <div class="dash-list-title">{{ link.get_platform_display }}</div>
+          <div class="dash-list-sub" style="word-break:break-all;">{{ link.url }}</div>
+        </div>
+      </div>
+      <div class="dash-list-actions">
+        <form method="POST" action="{% url 'delete_social' link.pk %}" onsubmit="return confirm('Remove this link?');" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="dash-icon-btn danger" title="Delete"><i class="bi bi-trash"></i></button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="dash-empty"><i class="bi bi-link-45deg"></i>No social links added yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

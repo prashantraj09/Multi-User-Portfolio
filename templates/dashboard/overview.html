@@ -1,0 +1,63 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block dash_extra_head %}
+<style>
+.ov-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.ov-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;}
+.ov-stat-num{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--text-primary);}
+.ov-stat-label{font-family:var(--font-mono);font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;}
+.ov-publish{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.ov-url{font-family:var(--font-mono);font-size:.82rem;color:var(--accent-light);word-break:break-all;}
+.ov-quicklinks{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;}
+.ov-quick{display:flex;flex-direction:column;gap:.5rem;text-decoration:none;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.1rem;transition:border-color .15s,transform .15s;}
+.ov-quick:hover{border-color:var(--border-accent);transform:translateY(-2px);}
+.ov-quick i{font-size:1.2rem;color:var(--accent-light);}
+.ov-quick span{font-size:.85rem;color:var(--text-primary);font-weight:500;}
+@media(max-width:700px){.ov-stats{grid-template-columns:1fr 1fr;}.ov-quicklinks{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header">
+  <div class="dash-eyebrow">// dashboard</div>
+  <h1 class="dash-title">Welcome back, {{ request.user.username }}</h1>
+</div>
+
+<div class="ov-stats">
+  <div class="ov-stat"><div class="ov-stat-num">{{ project_count }}</div><div class="ov-stat-label">Projects</div></div>
+  <div class="ov-stat"><div class="ov-stat-num">{{ experience_count }}</div><div class="ov-stat-label">Experience</div></div>
+  <div class="ov-stat"><div class="ov-stat-num">{{ skill_count }}</div><div class="ov-stat-label">Skills</div></div>
+  <div class="ov-stat"><div class="ov-stat-num">{{ message_count }}</div><div class="ov-stat-label">New messages</div></div>
+</div>
+
+<div class="dash-card ov-publish">
+  <div>
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem;">
+      {% if profile.is_published %}
+        <span class="dash-status-pill published">Published</span>
+      {% else %}
+        <span class="dash-status-pill draft">Private</span>
+      {% endif %}
+    </div>
+    <div class="ov-url">{{ portfolio_url }}</div>
+  </div>
+  <form method="POST" action="{% url 'toggle_publish' %}">
+    {% csrf_token %}
+    {% if profile.is_published %}
+      <button type="submit" class="btn-outline-custom"><i class="bi bi-eye-slash"></i> Make private</button>
+    {% else %}
+      <button type="submit" class="btn-primary-custom"><i class="bi bi-globe"></i> Publish portfolio</button>
+    {% endif %}
+  </form>
+</div>
+
+<div class="dash-card">
+  <div class="dash-label" style="margin-bottom:1rem;">Quick actions</div>
+  <div class="ov-quicklinks">
+    <a href="{% url 'edit_personal' %}" class="ov-quick"><i class="bi bi-person"></i><span>Edit personal info</span></a>
+    <a href="{% url 'add_project' %}" class="ov-quick"><i class="bi bi-kanban"></i><span>Add a project</span></a>
+    <a href="{% url 'manage_skills' %}" class="ov-quick"><i class="bi bi-stars"></i><span>Manage skills</span></a>
+  </div>
+</div>
+{% endblock %}

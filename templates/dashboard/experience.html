@@ -1,0 +1,106 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Experience{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header">
+  <div class="dash-eyebrow">// manage</div>
+  <h1 class="dash-title">Experience</h1>
+</div>
+
+<div class="dash-card">
+  <div class="dash-label" style="margin-bottom:1rem;">{% if editing %}Edit entry{% else %}Add a role{% endif %}</div>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if editing %}<input type="hidden" name="pk" value="{{ editing.pk }}">{% endif %}
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_company">Company</label>
+        <input class="dash-input" type="text" id="id_company" name="company" value="{{ form.company.value|default:'' }}" required>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_role">Role</label>
+        <input class="dash-input" type="text" id="id_role" name="role" value="{{ form.role.value|default:'' }}" required>
+      </div>
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_employment_type">Employment type</label>
+        <select class="dash-select dash-input" id="id_employment_type" name="employment_type">
+          {% for value, label in form.fields.employment_type.choices %}
+            <option value="{{ value }}" {% if form.employment_type.value == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_location">Location</label>
+        <input class="dash-input" type="text" id="id_location" name="location" value="{{ form.location.value|default:'' }}">
+      </div>
+    </div>
+
+    <div class="pf-checkbox-row" style="display:flex;align-items:center;gap:.6rem;margin-bottom:1.25rem;">
+      <input type="checkbox" id="id_is_remote" name="is_remote" {% if form.is_remote.value %}checked{% endif %} style="width:16px;height:16px;accent-color:var(--accent);">
+      <label class="dash-label" for="id_is_remote" style="margin:0;">Remote</label>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_description">Description</label>
+      <textarea class="dash-textarea dash-input" id="id_description" name="description" rows="4">{{ form.description.value|default:'' }}</textarea>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_technologies">Technologies <span style="opacity:.6;">(comma-separated)</span></label>
+      <input class="dash-input" type="text" id="id_technologies" name="technologies" value="{{ form.technologies.value|default:'' }}">
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_start_date">Start date</label>
+        <input class="dash-input" type="date" id="id_start_date" name="start_date" value="{{ form.start_date.value|date:'Y-m-d'|default:'' }}" required>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_end_date">End date <span style="opacity:.6;">(leave blank if current)</span></label>
+        <input class="dash-input" type="date" id="id_end_date" name="end_date" value="{{ form.end_date.value|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_company_logo">Company logo</label>
+      {% if editing.company_logo %}<img src="{{ editing.company_logo.url }}" style="width:48px;height:48px;border-radius:var(--radius-sm);object-fit:cover;margin-bottom:.5rem;display:block;" alt="">{% endif %}
+      <input class="dash-input" type="file" id="id_company_logo" name="company_logo" accept="image/*">
+    </div>
+
+    <div style="display:flex;gap:.75rem;">
+      <button type="submit" class="btn-primary-custom"><i class="bi bi-check-lg"></i> {% if editing %}Save changes{% else %}Add experience{% endif %}</button>
+      {% if editing %}<a href="{% url 'manage_experience' %}" class="btn-outline-custom">Cancel</a>{% endif %}
+    </div>
+  </form>
+</div>
+
+<div class="dash-card">
+  <div class="dash-label" style="margin-bottom:1rem;">Your experience</div>
+  {% if experiences %}
+    {% for e in experiences %}
+    <div class="dash-list-item">
+      <div class="dash-list-main">
+        {% if e.company_logo %}<img src="{{ e.company_logo.url }}" class="dash-list-thumb" alt="">{% else %}<div class="dash-list-thumb-placeholder"><i class="bi bi-briefcase"></i></div>{% endif %}
+        <div style="min-width:0;">
+          <div class="dash-list-title">{{ e.role }} · {{ e.company }}</div>
+          <div class="dash-list-sub">{{ e.start_date|date:"M Y" }} — {% if e.end_date %}{{ e.end_date|date:"M Y" }}{% else %}Present{% endif %}</div>
+        </div>
+      </div>
+      <div class="dash-list-actions">
+        <a href="{% url 'manage_experience' %}?edit={{ e.pk }}" class="dash-icon-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+        <form method="POST" action="{% url 'delete_experience' e.pk %}" onsubmit="return confirm('Delete this entry?');" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="dash-icon-btn danger" title="Delete"><i class="bi bi-trash"></i></button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="dash-empty"><i class="bi bi-briefcase"></i>No experience added yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

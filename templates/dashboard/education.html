@@ -1,0 +1,94 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Education{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header">
+  <div class="dash-eyebrow">// manage</div>
+  <h1 class="dash-title">Education</h1>
+</div>
+
+<div class="dash-card">
+  <div class="dash-label" style="margin-bottom:1rem;">{% if editing %}Edit entry{% else %}Add education{% endif %}</div>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if editing %}<input type="hidden" name="pk" value="{{ editing.pk }}">{% endif %}
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_institution">Institution</label>
+      <input class="dash-input" type="text" id="id_institution" name="institution" value="{{ form.institution.value|default:'' }}" required>
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_degree">Degree</label>
+        <input class="dash-input" type="text" id="id_degree" name="degree" value="{{ form.degree.value|default:'' }}" required>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_field_of_study">Field of study</label>
+        <input class="dash-input" type="text" id="id_field_of_study" name="field_of_study" value="{{ form.field_of_study.value|default:'' }}">
+      </div>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_description">Description</label>
+      <textarea class="dash-textarea dash-input" id="id_description" name="description" rows="3">{{ form.description.value|default:'' }}</textarea>
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_grade">Grade / GPA</label>
+        <input class="dash-input" type="text" id="id_grade" name="grade" value="{{ form.grade.value|default:'' }}">
+      </div>
+      <div></div>
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_start_date">Start date</label>
+        <input class="dash-input" type="date" id="id_start_date" name="start_date" value="{{ form.start_date.value|date:'Y-m-d'|default:'' }}" required>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_end_date">End date <span style="opacity:.6;">(leave blank if ongoing)</span></label>
+        <input class="dash-input" type="date" id="id_end_date" name="end_date" value="{{ form.end_date.value|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_institution_logo">Institution logo</label>
+      {% if editing.institution_logo %}<img src="{{ editing.institution_logo.url }}" style="width:48px;height:48px;border-radius:var(--radius-sm);object-fit:cover;margin-bottom:.5rem;display:block;" alt="">{% endif %}
+      <input class="dash-input" type="file" id="id_institution_logo" name="institution_logo" accept="image/*">
+    </div>
+
+    <div style="display:flex;gap:.75rem;">
+      <button type="submit" class="btn-primary-custom"><i class="bi bi-check-lg"></i> {% if editing %}Save changes{% else %}Add education{% endif %}</button>
+      {% if editing %}<a href="{% url 'manage_education' %}" class="btn-outline-custom">Cancel</a>{% endif %}
+    </div>
+  </form>
+</div>
+
+<div class="dash-card">
+  <div class="dash-label" style="margin-bottom:1rem;">Your education</div>
+  {% if educations %}
+    {% for edu in educations %}
+    <div class="dash-list-item">
+      <div class="dash-list-main">
+        {% if edu.institution_logo %}<img src="{{ edu.institution_logo.url }}" class="dash-list-thumb" alt="">{% else %}<div class="dash-list-thumb-placeholder"><i class="bi bi-mortarboard"></i></div>{% endif %}
+        <div style="min-width:0;">
+          <div class="dash-list-title">{{ edu.degree }} · {{ edu.institution }}</div>
+          <div class="dash-list-sub">{{ edu.start_date|date:"Y" }} — {% if edu.end_date %}{{ edu.end_date|date:"Y" }}{% else %}Present{% endif %}</div>
+        </div>
+      </div>
+      <div class="dash-list-actions">
+        <a href="{% url 'manage_education' %}?edit={{ edu.pk }}" class="dash-icon-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+        <form method="POST" action="{% url 'delete_education' edu.pk %}" onsubmit="return confirm('Delete this entry?');" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="dash-icon-btn danger" title="Delete"><i class="bi bi-trash"></i></button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="dash-empty"><i class="bi bi-mortarboard"></i>No education added yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

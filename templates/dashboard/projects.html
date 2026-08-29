@@ -1,0 +1,48 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Projects{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+  <div>
+    <div class="dash-eyebrow">// manage</div>
+    <h1 class="dash-title">Projects</h1>
+  </div>
+  <a href="{% url 'add_project' %}" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Add project</a>
+</div>
+
+<div class="dash-card">
+  {% if projects %}
+    {% for p in projects %}
+    <div class="dash-list-item">
+      <div class="dash-list-main">
+        {% if p.thumbnail %}
+          <img src="{{ p.thumbnail.url }}" class="dash-list-thumb" alt="">
+        {% else %}
+          <div class="dash-list-thumb-placeholder"><i class="bi bi-kanban"></i></div>
+        {% endif %}
+        <div style="min-width:0;">
+          <div class="dash-list-title">{{ p.title }}</div>
+          <div class="dash-list-sub">
+            {{ p.get_project_type_display }} ·
+            <span class="dash-status-pill {% if p.status == 'published' %}published{% else %}draft{% endif %}">{{ p.get_status_display }}</span>
+            {% if p.is_featured %} · <i class="bi bi-star-fill" style="color:var(--accent-light);"></i> Featured{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="dash-list-actions">
+        <a href="{% url 'edit_project' p.pk %}" class="dash-icon-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+        <form method="POST" action="{% url 'delete_project' p.pk %}" onsubmit="return confirm('Delete this project? This cannot be undone.');" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="dash-icon-btn danger" title="Delete"><i class="bi bi-trash"></i></button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="dash-empty">
+      <i class="bi bi-kanban"></i>
+      No projects yet. Add your first one to show it on your portfolio.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

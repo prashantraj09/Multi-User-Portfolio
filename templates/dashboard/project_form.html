@@ -1,0 +1,115 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{% if mode == 'edit' %}Edit project{% else %}Add project{% endif %}{% endblock %}
+
+{% block dash_extra_head %}
+<style>
+.pf-current-thumb{width:100px;height:70px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:.6rem;}
+.pf-checkbox-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1.25rem;}
+.pf-checkbox-row input{width:16px;height:16px;accent-color:var(--accent);}
+select.dash-input{appearance:none;}
+</style>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header">
+  <div class="dash-eyebrow">// {% if mode == 'edit' %}edit{% else %}new{% endif %}</div>
+  <h1 class="dash-title">{% if mode == 'edit' %}Edit project{% else %}Add project{% endif %}</h1>
+</div>
+
+<div class="dash-card">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_title">Title</label>
+      <input class="dash-input" type="text" id="id_title" name="title" value="{{ form.title.value|default:'' }}" required>
+      {% if form.title.errors %}<div class="dash-field-errors">{{ form.title.errors|join:" " }}</div>{% endif %}
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_subtitle">Subtitle</label>
+      <input class="dash-input" type="text" id="id_subtitle" name="subtitle" value="{{ form.subtitle.value|default:'' }}">
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_description">Description</label>
+      <textarea class="dash-textarea dash-input" id="id_description" name="description" rows="5" required>{{ form.description.value|default:'' }}</textarea>
+      {% if form.description.errors %}<div class="dash-field-errors">{{ form.description.errors|join:" " }}</div>{% endif %}
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_project_type">Project type</label>
+        <select class="dash-select dash-input" id="id_project_type" name="project_type">
+          {% for value, label in form.fields.project_type.choices %}
+            <option value="{{ value }}" {% if form.project_type.value == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_status">Status</label>
+        <select class="dash-select dash-input" id="id_status" name="status">
+          {% for value, label in form.fields.status.choices %}
+            <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_technologies">Technologies <span style="opacity:.6;">(comma-separated)</span></label>
+      <input class="dash-input" type="text" id="id_technologies" name="technologies" value="{{ form.technologies.value|default:'' }}" placeholder="React, Django, PostgreSQL">
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_live_url">Live URL</label>
+        <input class="dash-input" type="url" id="id_live_url" name="live_url" value="{{ form.live_url.value|default:'' }}">
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_repo_url">Repository URL</label>
+        <input class="dash-input" type="url" id="id_repo_url" name="repo_url" value="{{ form.repo_url.value|default:'' }}">
+      </div>
+    </div>
+
+    <div class="dash-field">
+      <label class="dash-label" for="id_case_study_url">Case study URL</label>
+      <input class="dash-input" type="url" id="id_case_study_url" name="case_study_url" value="{{ form.case_study_url.value|default:'' }}">
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_start_date">Start date</label>
+        <input class="dash-input" type="date" id="id_start_date" name="start_date" value="{{ form.start_date.value|date:'Y-m-d'|default:'' }}">
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_end_date">End date</label>
+        <input class="dash-input" type="date" id="id_end_date" name="end_date" value="{{ form.end_date.value|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+
+    <div class="dash-row-2">
+      <div class="dash-field">
+        <label class="dash-label" for="id_thumbnail">Thumbnail image</label>
+        {% if project.thumbnail %}<img src="{{ project.thumbnail.url }}" class="pf-current-thumb" alt=""><br>{% endif %}
+        <input class="dash-input" type="file" id="id_thumbnail" name="thumbnail" accept="image/*">
+      </div>
+      <div class="dash-field">
+        <label class="dash-label" for="id_cover_image">Cover image</label>
+        {% if project.cover_image %}<img src="{{ project.cover_image.url }}" class="pf-current-thumb" alt=""><br>{% endif %}
+        <input class="dash-input" type="file" id="id_cover_image" name="cover_image" accept="image/*">
+      </div>
+    </div>
+
+    <div class="pf-checkbox-row">
+      <input type="checkbox" id="id_is_featured" name="is_featured" {% if form.is_featured.value %}checked{% endif %}>
+      <label class="dash-label" for="id_is_featured" style="margin:0;">Feature this project</label>
+    </div>
+
+    <div style="display:flex;gap:.75rem;">
+      <button type="submit" class="btn-primary-custom"><i class="bi bi-check-lg"></i> Save project</button>
+      <a href="{% url 'manage_projects' %}" class="btn-outline-custom">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

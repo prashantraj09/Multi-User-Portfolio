@@ -1,0 +1,700 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}💻 Portfolio{% endblock title %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- AOS Animate on Scroll -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* ─── DESIGN TOKENS ─── */
+        :root {
+            --bg-primary:    #0a0a0a;
+            --bg-secondary:  #111111;
+            --bg-card:       #161616;
+            --bg-card-hover: #1e1e1e;
+            --accent:        #7c3aed;
+            --accent-light:  #a855f7;
+            --accent-glow:   rgba(124,58,237,0.25);
+            --text-primary:  #f0f0f0;
+            --text-secondary:#9ca3af;
+            --text-muted:    #6b7280;
+            --border:        rgba(255,255,255,0.06);
+            --border-accent: rgba(124,58,237,0.4);
+            --radius-sm:     6px;
+            --radius-md:     12px;
+            --radius-lg:     20px;
+            --font-display:  'Space Grotesk', sans-serif;
+            --font-body:     'Inter', sans-serif;
+            --font-mono:     'JetBrains Mono', monospace;
+        }
+
+        /* ─── RESET & BASE ─── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+        /* ─── SELECTION ─── */
+        ::selection { background: var(--accent); color: #fff; }
+
+        /* ─── NOISE TEXTURE OVERLAY ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* ─── NAVBAR ─── */
+        .navbar-custom {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.4s ease;
+        }
+        .navbar-custom.scrolled {
+            background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.6rem 0;
+        }
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .nav-logo span { color: var(--accent-light); }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            transition: color 0.2s, background 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.05);
+        }
+        .nav-cta {
+            font-size: 0.8rem !important;
+            font-family: var(--font-mono) !important;
+            background: var(--accent) !important;
+            color: #fff !important;
+            padding: 0.45rem 1.2rem !important;
+        }
+        .nav-cta:hover {
+            background: var(--accent-light) !important;
+            color: #fff !important;
+        }
+
+        /* Profile dropdown */
+        .nav-dropdown { position: relative; list-style: none; }
+        .nav-profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.4rem 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .nav-profile-btn:hover, .nav-dropdown.open .nav-profile-btn {
+            border-color: var(--border-accent);
+            color: var(--text-primary);
+        }
+        .nav-profile-btn i.bi-chevron-down { font-size: 0.7rem; transition: transform 0.2s; }
+        .nav-dropdown.open .nav-profile-btn i.bi-chevron-down { transform: rotate(180deg); }
+        .nav-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.6rem);
+            right: 0;
+            min-width: 200px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+        }
+        .nav-dropdown.open .nav-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .nav-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.55rem 0.75rem;
+            border-radius: var(--radius-sm);
+            transition: background 0.15s, color 0.15s;
+        }
+        .nav-dropdown-menu a:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+        .nav-dropdown-menu a i { width: 16px; text-align: center; color: var(--text-muted); }
+        .dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.2rem; }
+
+        /* Hamburger */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10,10,10,0.98);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .mobile-menu a:hover { color: var(--accent-light); }
+        .mobile-close {
+            position: absolute;
+            top: 1.5rem; right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.6rem;
+            cursor: pointer;
+        }
+
+        /* ─── SECTION UTILITIES ─── */
+        .section { padding: 6rem 0; position: relative; z-index: 1; }
+        .container-custom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .section-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-light);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+        .section-divider {
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+            margin: 1.25rem 0 2.5rem;
+        }
+
+        /* ─── ACCENT PILL / BADGE ─── */
+        .badge-custom {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--accent-light);
+            background: rgba(124,58,237,0.12);
+            border: 1px solid var(--border-accent);
+            border-radius: 100px;
+            padding: 0.3rem 0.8rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .badge-tech {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 500;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            padding: 0.2rem 0.6rem;
+            display: inline-block;
+        }
+
+        /* ─── CARDS ─── */
+        .card-custom {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-custom:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-accent);
+            box-shadow: 0 20px 60px rgba(124,58,237,0.12);
+        }
+
+        /* ─── BUTTONS ─── */
+        .btn-primary-custom {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1.75rem;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.03em;
+        }
+        .btn-primary-custom:hover {
+            background: var(--accent-light);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+        .btn-outline-custom {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1.75rem;
+            text-decoration: none;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+            letter-spacing: 0.03em;
+        }
+        .btn-outline-custom:hover {
+            border-color: var(--accent-light);
+            background: rgba(124,58,237,0.08);
+            color: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        /* ─── GLOW ORBS (decorative) ─── */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb-purple { background: rgba(124,58,237,0.2); }
+        .orb-blue   { background: rgba(59,130,246,0.12); }
+
+        /* ─── FOOTER ─── */
+        .footer-custom {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .footer-text a {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+
+        /* ─── SCROLL TO TOP ─── */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 42px;
+            height: 42px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 100;
+            font-size: 1rem;
+        }
+        .scroll-top.visible { opacity: 1; transform: translateY(0); }
+        .scroll-top:hover { background: var(--accent-light); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-toggle { display: block; }
+            .section { padding: 4rem 0; }
+            .container-custom { padding: 0 1.25rem; }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar-custom" id="navbar">
+        <div class="navbar-inner">
+            <a href="{% if portfolio_page %}#home{% else %}{% url 'landing' %}{% endif %}" class="nav-logo">
+                {% if info and info.full_name %}
+                  <span>&lt;</span>{{ info.full_name|truncatewords:1 }}<span>/&gt;</span>
+                {% elif request.user.is_authenticated %}
+                  <span>&lt;</span>{{ request.user.username }}<span>/&gt;</span>
+                {% else %}
+                  <span>&lt;</span>Dev<span>/&gt;</span>
+                {% endif %}
+            </a>
+            <ul class="nav-links" id="navLinks">
+                {% if portfolio_page %}
+                <li><a href="#home" class="active">/home</a></li>
+                {% if projects %}
+                    <li><a href="#projects">/projects</a></li>
+                {% endif %}
+                {% if experiences %}
+                   <li><a href="#experience">/experience</a></li>
+                {% endif %}
+                {% if skills %}
+                   <li><a href="#skills">/skills</a></li>
+                {% endif %}
+                <li><a href="#about">/about-me</a></li>
+                <li><a href="#contact" class="nav-cta">/contact</a></li>
+                {% endif %}
+
+                {% if request.user.is_authenticated %}
+                <li class="nav-dropdown" id="navDropdown">
+                    <button class="nav-profile-btn" id="navProfileBtn" type="button">
+                        <i class="bi bi-person-circle"></i>
+                        {{ request.user.username }}
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="{% url 'dashboard' %}"><i class="bi bi-grid"></i> Dashboard</a>
+                        <a href="/{{ request.user.profile.username_slug }}/" target="_blank"><i class="bi bi-eye"></i> View portfolio</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                    </div>
+                </li>
+                {% else %}
+                    <li class="nav-dropdown" id="authDropdown">
+                        <button class="nav-profile-btn" id="authDropdownBtn" type="button">
+                            <i class="bi bi-person-circle"></i>
+                            Account
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+
+                        <div class="nav-dropdown-menu">
+                            <a href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Login
+                            </a>
+
+                            <a href="{% url 'register' %}">
+                                <i class="bi bi-person-plus"></i>
+                                Register
+                            </a>
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-close" id="mobileClose"><i class="bi bi-x-lg"></i></button>
+        {% if portfolio_page %}
+        <a href="#home" onclick="closeMobileMenu()">/home</a>
+        <a href="#projects" onclick="closeMobileMenu()">/projects</a>
+        <a href="#experience" onclick="closeMobileMenu()">/experience</a>
+        <a href="#skills" onclick="closeMobileMenu()">/skills</a>
+        <a href="#about" onclick="closeMobileMenu()">/about-me</a>
+        <a href="#contact" onclick="closeMobileMenu()">/contact</a>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" onclick="closeMobileMenu()">/dashboard</a>
+        <a href="/{{ request.user.profile.username_slug }}/" onclick="closeMobileMenu()">/my-portfolio</a>
+        <a href="{% url 'logout' %}" onclick="closeMobileMenu()">/logout</a>
+        {% else %}
+        <a href="{% url 'login' %}" onclick="closeMobileMenu()">/login</a>
+        <a href="{% url 'register' %}" onclick="closeMobileMenu()">/register</a>
+        {% endif %}
+    </div>
+
+    <!-- PAGE CONTENT -->
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer class="footer-custom">
+        <div class="container-custom">
+            <p class="footer-text">
+                {% if info %}
+                    Designed &amp; built by <a href="#">{{ info.full_name }}</a> &nbsp;·&nbsp;
+                {% endif %}
+                <span id="year"></span> &nbsp;·&nbsp; All rights reserved
+            </p>
+        </div>
+    </footer>
+
+    <!-- SCROLL TO TOP -->
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    
+    <script>
+        // AOS Init
+    AOS.init({
+        duration: 700,
+        easing: 'ease-out-cubic',
+        once: true,
+        offset: 60
+    });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+
+        const scrollTop = document.getElementById('scrollTop');
+        if (scrollTop) {
+            scrollTop.classList.toggle('visible', window.scrollY > 400);
+        }
+    });
+
+
+    // Active nav link
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                navAnchors.forEach(a => a.classList.remove('active'));
+
+                const link = document.querySelector(
+                    `.nav-links a[href="#${e.target.id}"]`
+                );
+
+                if (link) {
+                    link.classList.add('active');
+                }
+            }
+        });
+    }, {
+        threshold: 0.35
+    });
+
+    sections.forEach(s => observer.observe(s));
+
+
+    // Scroll to top
+    const scrollTop = document.getElementById('scrollTop');
+
+    if (scrollTop) {
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+
+    // Mobile menu
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+
+    if (navToggle && mobileMenu) {
+        navToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+        });
+    }
+
+    if (mobileClose && mobileMenu) {
+        mobileClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+        });
+    }
+
+    function closeMobileMenu() {
+        if (mobileMenu) {
+            mobileMenu.classList.remove('open');
+        }
+    }
+
+
+    // ============================================
+    // PROFILE DROPDOWN - Logged in users
+    // ============================================
+
+    const navDropdown = document.getElementById('navDropdown');
+    const navProfileBtn = document.getElementById('navProfileBtn');
+
+    if (navDropdown && navProfileBtn) {
+
+        navProfileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            // Close account dropdown if open
+            const authDropdown = document.getElementById('authDropdown');
+
+            if (authDropdown) {
+                authDropdown.classList.remove('open');
+            }
+
+            // Toggle profile dropdown
+            navDropdown.classList.toggle('open');
+        });
+    }
+
+
+    // ============================================
+    // ACCOUNT DROPDOWN - Login / Register
+    // ============================================
+
+    const authDropdown = document.getElementById('authDropdown');
+    const authDropdownBtn = document.getElementById('authDropdownBtn');
+
+    if (authDropdown && authDropdownBtn) {
+
+        authDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            // Close profile dropdown if open
+            if (navDropdown) {
+                navDropdown.classList.remove('open');
+            }
+
+            // Toggle account dropdown
+            authDropdown.classList.toggle('open');
+        });
+    }
+
+
+    // ============================================
+    // CLOSE DROPDOWNS WHEN CLICKING OUTSIDE
+    // ============================================
+
+    document.addEventListener('click', (e) => {
+
+        if (navDropdown && !navDropdown.contains(e.target)) {
+            navDropdown.classList.remove('open');
+        }
+
+        if (authDropdown && !authDropdown.contains(e.target)) {
+            authDropdown.classList.remove('open');
+        }
+
+    });
+
+
+    // Footer year
+    const year = document.getElementById('year');
+
+    if (year) {
+        year.textContent = new Date().getFullYear();
+    }
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

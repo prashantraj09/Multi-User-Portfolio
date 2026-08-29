@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Messages{% endblock %}
+
+{% block dash_extra_head %}
+<style>
+.msg-item{border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin-bottom:1rem;background:var(--bg-secondary);}
+.msg-item.new{border-color:var(--border-accent);background:rgba(124,58,237,.04);}
+.msg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.6rem;flex-wrap:wrap;}
+.msg-from{font-size:.92rem;font-weight:600;color:var(--text-primary);}
+.msg-email{font-family:var(--font-mono);font-size:.75rem;color:var(--accent-light);}
+.msg-date{font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted);white-space:nowrap;}
+.msg-subject{font-size:.82rem;color:var(--text-secondary);font-style:italic;margin-bottom:.5rem;}
+.msg-body{font-size:.86rem;color:var(--text-primary);line-height:1.6;white-space:pre-wrap;}
+.msg-foot{display:flex;justify-content:flex-end;margin-top:.85rem;}
+</style>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-header">
+  <div class="dash-eyebrow">// inbox</div>
+  <h1 class="dash-title">Messages</h1>
+</div>
+
+<div class="dash-card">
+  {% if inbox %}
+    {% for m in inbox %}
+    <div class="msg-item {% if m.status == 'new' %}new{% endif %}">
+      <div class="msg-head">
+        <div>
+          <span class="msg-from">{{ m.name }}</span> &nbsp;
+          <span class="msg-email">{{ m.email }}</span>
+        </div>
+        <span class="msg-date">{{ m.created_at|date:"M j, Y · g:i A" }}</span>
+      </div>
+      {% if m.subject %}<div class="msg-subject">{{ m.subject }}</div>{% endif %}
+      <div class="msg-body">{{ m.message }}</div>
+      {% if m.status == 'new' %}
+      <div class="msg-foot">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="mark_read" value="{{ m.pk }}">
+          <button type="submit" class="dash-icon-btn" title="Mark as read"><i class="bi bi-check2"></i></button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="dash-empty"><i class="bi bi-envelope"></i>No messages yet. They'll show up here when someone contacts you through your portfolio.</div>
+  {% endif %}
+</div>
+{% endblock %}
