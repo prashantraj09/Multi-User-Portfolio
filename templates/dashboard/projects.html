@@ -33,6 +33,14 @@
         <a href="{% url 'edit_project' p.pk %}" class="dash-icon-btn" title="Edit"><i class="bi bi-pencil"></i></a>
         <form method="POST" action="{% url 'delete_project' p.pk %}" onsubmit="return confirm('Delete this project? This cannot be undone.');" style="display:inline;">
           {% csrf_token %}
+          {% if form.errors %}
+            <div class="dash-alert error">
+              {{ form.non_field_errors }}
+              {% for field in form %}
+                {% if field.errors %}<div>{{ field.label }}: {{ field.errors|join:", " }}</div>{% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
           <button type="submit" class="dash-icon-btn danger" title="Delete"><i class="bi bi-trash"></i></button>
         </form>
       </div>

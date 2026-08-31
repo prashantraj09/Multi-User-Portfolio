@@ -19,6 +19,14 @@ select.dash-input{appearance:none;}
 <div class="dash-card">
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+    {% if form.errors %}
+      <div class="dash-alert error">
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          {% if field.errors %}<div>{{ field.label }}: {{ field.errors|join:", " }}</div>{% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
 
     <div class="dash-field">
       <label class="dash-label" for="id_title">Title</label>

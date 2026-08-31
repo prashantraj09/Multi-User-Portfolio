@@ -19,7 +19,6 @@ class RegisterForm(UserCreationForm):
         slug = self.cleaned_data['username_slug'].lower()
         if UserProfile.objects.filter(username_slug=slug).exists():
             raise forms.ValidationError("This URL slug is already taken.")
-        # Prevent reserved words
         reserved = ['admin', 'login', 'logout', 'register', 'dashboard', 'static', 'media']
         if slug in reserved:
             raise forms.ValidationError("This slug is reserved. Please choose another.")
@@ -29,7 +28,7 @@ class RegisterForm(UserCreationForm):
 class PersonalInfoForm(forms.ModelForm):
     class Meta:
         model   = PersonalInfo
-        exclude = ['user', 'updated_at']
+        exclude = ['user', 'update_at']   
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 6}),
         }
@@ -38,13 +37,13 @@ class PersonalInfoForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model   = Project
-        exclude = ['user', 'id', 'slug', 'created_at', 'updated_at']
+        exclude = ['user', 'id', 'slug', 'created_at', 'updated_at', 'order']   # ← added order
 
 
 class ExperienceForm(forms.ModelForm):
     class Meta:
         model   = Experience
-        exclude = ['user']
+        exclude = ['user', 'order']   # ← added order
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date':   forms.DateInput(attrs={'type': 'date'}),
@@ -55,7 +54,7 @@ class ExperienceForm(forms.ModelForm):
 class EducationForm(forms.ModelForm):
     class Meta:
         model   = Education
-        exclude = ['user']
+        exclude = ['user', 'order']   # ← added order
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date':   forms.DateInput(attrs={'type': 'date'}),
@@ -65,16 +64,16 @@ class EducationForm(forms.ModelForm):
 class SkillForm(forms.ModelForm):
     class Meta:
         model   = Skill
-        exclude = ['user']
+        exclude = ['user', 'order']   # ← added order
 
 
 class SkillCategoryForm(forms.ModelForm):
     class Meta:
         model   = SkillCategory
-        exclude = ['user']
+        exclude = ['user', 'order']   # ← added order
 
 
 class SocialLinkForm(forms.ModelForm):
     class Meta:
         model   = SocialLink
-        exclude = ['user']
+        exclude = ['user', 'order']   # ← added order

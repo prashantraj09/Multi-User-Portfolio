@@ -44,6 +44,14 @@
   </div>
   <form method="POST" action="{% url 'toggle_publish' %}">
     {% csrf_token %}
+    {% if form.errors %}
+      <div class="dash-alert error">
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          {% if field.errors %}<div>{{ field.label }}: {{ field.errors|join:", " }}</div>{% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
     {% if profile.is_published %}
       <button type="submit" class="btn-outline-custom"><i class="bi bi-eye-slash"></i> Make private</button>
     {% else %}

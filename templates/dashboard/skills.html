@@ -26,6 +26,14 @@
     <div class="dash-label" style="margin-bottom:1rem;">Add category</div>
     <form method="POST">
       {% csrf_token %}
+      {% if form.errors %}
+      <div class="dash-alert error">
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          {% if field.errors %}<div>{{ field.label }}: {{ field.errors|join:", " }}</div>{% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
       <input type="hidden" name="form_type" value="category">
       <div class="dash-field">
         <label class="dash-label" for="id_cat_name">Category name</label>

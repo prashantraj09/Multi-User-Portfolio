@@ -19,8 +19,6 @@ from .forms import (
 # ════════════════════════════════════════════════════════════════════
 # LANDING
 # ════════════════════════════════════════════════════════════════════
-def portfolio(request):
-    return render(request, 'website/portfolio.html')
 
 def landing(request):
     """
@@ -29,7 +27,7 @@ def landing(request):
     people register, log in, or jump to a known portfolio URL.
     """
     if request.user.is_authenticated:
-        return redirect('portfolio')
+        return redirect('public_portfolio', username=request.user.profile.username_slug)
     return render(request, 'website/landing.html')
 
 

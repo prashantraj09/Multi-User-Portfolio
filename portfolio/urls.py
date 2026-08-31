@@ -51,7 +51,7 @@ urlpatterns = [
     path('dashboard/publish/',            views.toggle_publish,      name='toggle_publish'),
 
 
-    path('website/portfolio.html/', views.portfolio, name='portfolio'),
+    # path('website/portfolio.html/', views.portfolio, name='portfolio'),
     
     
     # ── Public portfolio (must be LAST — catches every remaining /<slug>/) ─

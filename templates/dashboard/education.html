@@ -11,6 +11,14 @@
   <div class="dash-label" style="margin-bottom:1rem;">{% if editing %}Edit entry{% else %}Add education{% endif %}</div>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+    {% if form.errors %}
+      <div class="dash-alert error">
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          {% if field.errors %}<div>{{ field.label }}: {{ field.errors|join:", " }}</div>{% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
     {% if editing %}<input type="hidden" name="pk" value="{{ editing.pk }}">{% endif %}
 
     <div class="dash-field">
