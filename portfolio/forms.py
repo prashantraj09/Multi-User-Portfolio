@@ -28,7 +28,7 @@ class RegisterForm(UserCreationForm):
 class PersonalInfoForm(forms.ModelForm):
     class Meta:
         model   = PersonalInfo
-        exclude = ['user', 'update_at']   
+        exclude = ['user', 'update_at']
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 6}),
         }
@@ -37,13 +37,13 @@ class PersonalInfoForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model   = Project
-        exclude = ['user', 'id', 'slug', 'created_at', 'updated_at', 'order']   # ← added order
+        exclude = ['user', 'id', 'slug', 'created_at', 'updated_at', 'order']
 
 
 class ExperienceForm(forms.ModelForm):
     class Meta:
         model   = Experience
-        exclude = ['user', 'order']   # ← added order
+        exclude = ['user', 'order']
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date':   forms.DateInput(attrs={'type': 'date'}),
@@ -54,7 +54,7 @@ class ExperienceForm(forms.ModelForm):
 class EducationForm(forms.ModelForm):
     class Meta:
         model   = Education
-        exclude = ['user', 'order']   # ← added order
+        exclude = ['user', 'order']
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date':   forms.DateInput(attrs={'type': 'date'}),
@@ -64,16 +64,20 @@ class EducationForm(forms.ModelForm):
 class SkillForm(forms.ModelForm):
     class Meta:
         model   = Skill
-        exclude = ['user', 'order']   # ← added order
+        exclude = ['user', 'order']
 
 
 class SkillCategoryForm(forms.ModelForm):
     class Meta:
         model   = SkillCategory
-        exclude = ['user', 'order']   # ← added order
+        exclude = ['user', 'order']
 
 
 class SocialLinkForm(forms.ModelForm):
     class Meta:
         model   = SocialLink
-        exclude = ['user', 'order']   # ← added order
+        # is_active has no checkbox in social.html, so it must stay excluded
+        # here too — otherwise every submission silently saves it as False
+        # (BooleanFields default to False, not the model's default=True,
+        # when their input is missing from POST data).
+        exclude = ['user', 'order', 'is_active']
