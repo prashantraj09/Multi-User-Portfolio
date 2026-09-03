@@ -15,8 +15,7 @@
 
 <br/>
 
-![Portfolio Preview](https://res.cloudinary.com/demo/image/upload/v1/samples/landscapes/nature-mountains.jpg)
-> *Replace the image above with an actual screenshot of your live site*
+![Portfolio Preview](https://drive.google.com/file/d/1_OQNsT_2VrhIHTl2Wyt5SnG3JnZriI63/view?usp=sharing)
 
 </div>
 
@@ -313,7 +312,7 @@ This project is configured to deploy on **[Render](https://render.com)** out of 
 
 | Landing Page | Dashboard | Public Portfolio |
 |---|---|---|
-| ![Landing](https://via.placeholder.com/300x180?text=Landing+Page) | ![Dashboard](https://via.placeholder.com/300x180?text=Dashboard) | ![Portfolio](https://via.placeholder.com/300x180?text=Public+Portfolio) |
+| ![Landing](https://drive.google.com/file/d/1_OQNsT_2VrhIHTl2Wyt5SnG3JnZriI63/view?usp=sharing) | ![Dashboard](https://drive.google.com/file/d/1Ou-jg9lsXC2mVB82K6PprybSNxQd-cWY/view?usp=sharing) | ![Portfolio](https://drive.google.com/file/d/1tViFs7hhxtj6_-eQv4uNedFm04R1b9qt/view?usp=sharing) |
 
 ---
 
