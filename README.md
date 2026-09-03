@@ -15,8 +15,6 @@
 
 <br/>
 
-![Portfolio Preview](https://drive.google.com/file/d/1_OQNsT_2VrhIHTl2Wyt5SnG3JnZriI63/view?usp=sharing)
-
 </div>
 
 ---
@@ -32,7 +30,6 @@
 - [🗄️ Database](#️-database)
 - [☁️ File Storage](#️-file-storage)
 - [🚀 Deployment](#-deployment)
-- [📸 Screenshots](#-screenshots)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 - [👤 Author](#-author)
@@ -306,15 +303,6 @@ This project is configured to deploy on **[Render](https://render.com)** out of 
 
 ---
 
-## 📸 Screenshots
-
-> *Add your own screenshots below by replacing the placeholder links*
-
-| Landing Page | Dashboard | Public Portfolio |
-|---|---|---|
-| ![Landing](https://drive.google.com/file/d/1_OQNsT_2VrhIHTl2Wyt5SnG3JnZriI63/view?usp=sharing) | ![Dashboard](https://drive.google.com/file/d/1Ou-jg9lsXC2mVB82K6PprybSNxQd-cWY/view?usp=sharing) | ![Portfolio](https://drive.google.com/file/d/1tViFs7hhxtj6_-eQv4uNedFm04R1b9qt/view?usp=sharing) |
-
----
 
 ## 🤝 Contributing
 
