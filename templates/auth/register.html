@@ -40,7 +40,7 @@
       {% csrf_token %}
 
       <div class="auth-group">
-        <label class="auth-label" for="id_username">Username</label>
+        <label class="auth-label" for="id_username">Full Name</label>
         <input class="auth-input" type="text" id="id_username" name="username" required autofocus
                value="{{ form.username.value|default:'' }}">
         {% if form.username.errors %}<div class="field-errors">{{ form.username.errors|join:" " }}</div>{% endif %}
@@ -56,7 +56,7 @@
       <div class="auth-group">
         <label class="auth-label" for="id_username_slug">Your public URL</label>
         <div class="auth-prefix">
-          <span class="auth-prefix-label">portfolio.in/</span>
+          <span class="auth-prefix-label">multi-user-portfolio-nnym.onrender.com/</span>
           <input class="auth-input" type="text" id="id_username_slug" name="username_slug" required
                  placeholder="yourname" value="{{ form.username_slug.value|default:'' }}">
         </div>
