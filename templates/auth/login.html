@@ -39,12 +39,12 @@
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ next }}">
       <div class="auth-group">
-        <label class="auth-label" for="username">Username</label>
-        <input class="auth-input" type="text" id="username" name="username" required autofocus>
+        <label class="auth-label" for="id_username">Username</label>
+        <input class="auth-input" type="text" placeholder="prashantraj09" id="id_username" name="username" required autofocus autocomplete="username">
       </div>
       <div class="auth-group">
         <label class="auth-label" for="password">Password</label>
-        <input class="auth-input" type="password" id="password" name="password" required>
+        <input class="auth-input" type="password" id="password" name="password" placeholder="••••••••"required autocomplete="current-password">
       </div>
       <button type="submit" class="btn-primary-custom auth-submit" style="justify-content:center;">
         <i class="bi bi-box-arrow-in-right"></i> Log in

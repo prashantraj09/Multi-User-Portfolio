@@ -37,24 +37,17 @@ def landing(request):
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-
+ 
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            # signals.py already created UserProfile + PersonalInfo with a
-            # default slug equal to the username — overwrite with the slug
-            # the person actually chose on the register form.
-            profile = user.profile
-            profile.username_slug = form.cleaned_data['username_slug']
-            profile.save()
-
+            user = form.save()          # handles User + UserProfile + PersonalInfo
             login(request, user)
-            messages.success(request, "Welcome! Let's set up your portfolio.")
+            messages.success(request, f'Welcome {user.get_full_name() or user.username}! Set up your portfolio below.')
             return redirect('dashboard')
     else:
         form = RegisterForm()
-
+ 
     return render(request, 'auth/register.html', {'form': form})
 
 
